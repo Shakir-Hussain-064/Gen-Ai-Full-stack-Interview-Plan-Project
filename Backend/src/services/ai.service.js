@@ -119,7 +119,7 @@ Job Description: ${jobDescription}
 Return only valid JSON exactly as requested. Do not include markdown, explanation, or any extra text.`
 
     const response = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
+        model: "gemini-3-flash-preview",
         contents: prompt,
     })
 
