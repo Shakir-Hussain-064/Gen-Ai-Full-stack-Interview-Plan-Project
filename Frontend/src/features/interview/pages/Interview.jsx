@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import '../style/interview.scss'
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate, useParams } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 
 
@@ -60,7 +61,9 @@ const RoadMapDay = ({ day }) => (
 const Interview = () => {
     const [ activeNav, setActiveNav ] = useState('technical')
     const { report, getReportById, loading, getResumePdf } = useInterview()
+    const { handleLogout, loading: authLoading } = useAuth()
     const { interviewId } = useParams()
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (interviewId) {
@@ -68,7 +71,12 @@ const Interview = () => {
         }
     }, [ interviewId ])
 
-
+    const handleUserLogout = async () => {
+        const success = await handleLogout()
+        if (success) {
+            navigate('/login')
+        }
+    }
 
     if (loading || !report) {
         return (
@@ -90,7 +98,13 @@ const Interview = () => {
                 {/* ── Left Nav ── */}
                 <nav className='interview-nav'>
                     <div className="nav-content">
-                        <p className='interview-nav__label'>Sections</p>
+                        <div className='nav-header'>
+                            <p className='interview-nav__label'>Sections</p>
+                            <button type='button' className='button primary-button' onClick={handleUserLogout} disabled={authLoading}>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                                Logout
+                            </button>
+                        </div>
                         {NAV_ITEMS.map(item => (
                             <button
                                 key={item.id}

@@ -2,10 +2,12 @@ import React, { useState, useRef } from 'react'
 import "../style/home.scss"
 import { useInterview } from '../hooks/useInterview.js'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../../auth/hooks/useAuth.js'
 
 const Home = () => {
 
     const { loading, generateReport, reports } = useInterview()
+    const { handleLogout, loading: authLoading } = useAuth()
     const [jobDescription, setJobDescription] = useState("")
     const [selfDescription, setSelfDescription] = useState("")
     const resumeInputRef = useRef()
@@ -56,7 +58,12 @@ const Home = () => {
 
     }
 
-
+    const handleUserLogout = async () => {
+        const success = await handleLogout()
+        if (success) {
+            navigate('/login')
+        }
+    }
 
     if (loading) {
         return (
@@ -73,6 +80,12 @@ const Home = () => {
             <header className='page-header'>
                 <h1>Create Your Custom <span className='highlight'>Interview Plan</span></h1>
                 <p>Let our AI analyze the job requirements and your unique profile to build a winning strategy.</p>
+                <div className='page-header__actions'>
+                    <button type='button' className='button primary-button' onClick={handleUserLogout} disabled={authLoading}>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" /></svg>
+                        Logout
+                    </button>
+                </div>
             </header>
 
             {/* Main Card */}
